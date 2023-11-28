@@ -12,4 +12,4 @@ Instruções:
 ex: py manage.py runserver 127.0.0.1:8000
 
 - Substitua o ip no diretório "JouliusBank_Site\JouliusBank\src\components\Login.jsx" pelo seu ip local
-- Inicie o projeto com "npx run dev"
+- Inicie o projeto com "npm run dev"
