@@ -1,38 +1,99 @@
-import {useState} from 'react'
-import { close, logo, menu } from '../assets'
-import { navLinks } from '../constants'
+// Importa o componente Input do Material Tailwind React e a função useState do React
+import { Input } from "@material-tailwind/react";
+import { useState } from "react";
+import styles from "../style"; // Importa estilos
+import Button from "./Button"; // Importa o componente Button
 
-const Navbar = () => {
-  const [toggle, setToggle] = useState(false)
+// Componente Login
+const Login = () => {
+  // Declaração de estados para armazenar username e password
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+  // Função para atualizar o estado do username
+  const handleUsernameChange = (event) => {
+    setUsername(event.target.value);
+  };
+
+  // Função para atualizar o estado da password
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  };
+
+  // Função para lidar com o envio do formulário
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const loginData = {
+      username: username,
+      password: password
+    };
+
+    try {
+      // Envia uma solicitação POST para a API com dados de login
+      const response = await fetch('http://10.109.71.16:8000/api/v1/auth/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(loginData)
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        alert(`Login bem sucedido! Bem vindo, ${data.username}`);
+      } else {
+        console.error('Erro no login');
+      }
+    } catch (error) {
+      console.log('Erro ao conectar à API: ', error);
+    }
+  };
+
   return (
-    <nav className='w-full flex py-6 justify-between items-center navbar'>
-      <img src={logo} alt="JouliusBank" className='w-[225px] h-[47px]'/>
-      <ul className='list-none sm:flex hidden justify-end items-center flex-1'>
-        {navLinks.map((nav, index) => (
-          <li key={nav.id} className={`font-poppins font-normal cursor-pointer text-[16px] ${index === navLinks.length - 1 ? 'mr-0' : 'mr-10'} text-white mr-10`}>
-            <a href={`#${nav.id}`}>
-              {nav.title}
-            </a>
-          </li>
-        ))}
-      </ul>
+    // Estrutura do componente de login
+    <section id="login" className={`${styles.padding} ${styles.flexCenter} ${styles.marginY} sm:flex-row flex-col bg-black-gradient-2 rounded-[20px] box-shadow`}>
+      {/* Elementos visuais de fundo com gradientes */}
+      <div className="absolute z-[0] w-[60%] h-[60%] -right-[50%] rounded-full blue__gradient bottom-40" />
 
-      <div className='sm:hidden flex flex-1 justify-end items-center'>
-        <img src={toggle ? close : menu} alt="menu" className='w-[28px] h-[28px] object-contain' onClick={() => setToggle((prev) => !prev)} />
-        <div className={`${toggle ? 'flex' : 'hidden'} p-6 bg-black-gradient absolute top-20 right-0 mx-4 my-2 min-w-[140px] rounded-x1 sidebar`}>
-        <ul className='list-none flex flex-col justify-end items-center flex-1'>
-          {navLinks.map((nav, index) => (
-            <li key={nav.id} className={`font-poppins font-normal cursor-pointer text-[16px] ${index === navLinks.length - 1 ? 'mr-0' : 'mb-4'} text-white mr-10`}>
-              <a href={`#${nav.id}`}>
-                {nav.title}
-              </a>
-            </li>
-          ))}
-      </ul>
+      {/* Título do login */}
+      <h2 className={styles.heading2}>Login</h2>
+
+      {/* Formulário de login */}
+      <form onSubmit={handleSubmit}>
+        <div className="w-72">
+          {/* Campo de entrada para CPF ou CNPJ */}
+          <label className={`${styles.paragraph} max-w-[470px] mt-5`} htmlFor="password">CPF ou CNPJ:</label>
+          <input
+            type="text"
+            id="username"
+            className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
+            placeholder="CPF ou CNPJ"
+            value={username}
+            onChange={handleUsernameChange}
+          />
         </div>
-      </div>
-    </nav>
-  )
-}
 
-export default Navbar
+        <div className="flex flex-col">
+          {/* Campo de entrada para senha */}
+          <label className={`${styles.paragraph} max-w-[470px] mt-5`} htmlFor="password">Senha:</label>
+          <input
+            type="password"
+            id="password"
+            className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
+            placeholder="Senha"
+            value={password}
+            onChange={handlePasswordChange}
+          />
+        </div>
+
+        {/* Botão de submissão */}
+        <div className={`${styles.flexCenter} flex flex-col sm:ml-10 ml-0 sm:mt-0 mt-10`}>
+          <Button />
+        </div>
+      </form>
+    </section>
+  );
+};
+
+export default Login; // Exporta o componente Login
